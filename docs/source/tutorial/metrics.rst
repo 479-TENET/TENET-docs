@@ -22,14 +22,21 @@ Assume we want to compute some metrics of input matrix A
 First, we need to recongnize which groups of statement instance use the same data for computation.
 TENET can find any two statement instances S[i][j][k] and S[i][j'][k] access the same A[i][k], and construct a *statement->statement* mapping {S[i][j][k]->S[i][j'][k]}
 
-Then TENET constructs a *time->time* mapping to express any two timestamps are adjcent, and we denote it *{T[time_t]->T[adjacent_t]}* (for example T[0][1]->T[0][2], T[0][59]->T[1][0] are two nearby-time pair if T[i][j] denotes minute j, hour i)
-As well, we construct two Identical mapping: {PE[i][j]->PE[i][j]}, {T[same_time]->T[same_time]}
+Then TENET constructs a *time->time* mapping to express any two timestamps are continuous, and we denote it *{T[prev_t]->T[next_t]}* (for example T[0][1]->T[0][2], T[0][59]->T[1][0] are two continuous pair if T[i][j] denotes minute j, hour i)
+As well, we construct two Identical mapping: {PE[i][j]->PE[i][j]}, {T[t]->T[t]}
 
-time-space 
+All possible reuse of one data element can only occur in three circumstance::
 
+    1. Temporal reuse: one PE access the element in two continuous timestamps
+    2. Spatial reuse: two PEs connected by boardcast wire access the element at the same time
+    3. Temporal-Spatial reuse: two PEs connected by sending-forward wire access the element in succession
 
-| As we add some constraints: 
-| *space1->space2* Map equals ``Identical(Coordinate(PE)->Coordinate(PE)) union PE interconnection``;
-| *time1->time2* Map equals ``Identical(Coordinate(T)->Coordinate(T)) union Coordinate(t1)->Coordinate(t2) s.t. t2 is immediately after t1 in canonical order``.
-| Then construct *space1-time1->space2-time2*. Because
+Next, we construct a (space,time)->(space,time) mapping with two space->space and time->time mapping using the rule below:
+F({space1->space2}, {time1->time2}) => {(space1,time1)->(space2->time2)}
 
+Then apply the rule to different space->space, time->time mapping pair:
+1. F({PE[i][j]->PE[i][j]}, {T[prev_t]->T[next_t]}) => temporal reuse opportunity.
+2. F(PE Interconnect, {T[t]->T[t]}) => spatial reuse opportunity.
+3. F(PE Interconnect, {T[prev_t][next_t]}) => temporal-spatial reuse opportunity.
+
+To get exact reuse of input Matrix A, we should 
