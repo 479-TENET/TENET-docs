@@ -13,6 +13,12 @@ At the command line::
 
 The instructions in ``init.sh`` assume your machine uses Ubuntu/Debian operating system and is under good network condition (git clone and submodule update can run smoothly). If not, please refer to barvinok_readme_, comparing it with ``init.sh`` to install by yourself.
 
+Then build TENET CLI::
+
+   make cli
+
+The usage of CLI can be found at :doc:`tutorial/usage` and :doc:`tutorial/cli`.
+
 .. _isl: http://isl.gforge.inria.fr/
 .. _barvinok: http://barvinok.gforge.inria.fr/
 .. _barvinok_readme: http://repo.or.cz/w/barvinok.git/blob/HEAD:/README

@@ -10,3 +10,4 @@ This page is a overall tutorial to lead you through every essential definitions 
     relation_notation
     metrics
     usage
+    cli
